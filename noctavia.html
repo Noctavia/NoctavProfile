@@ -14,55 +14,12 @@
       font-family: Inter, sans-serif;
       margin: 0;
       padding: 0;
-      overflow: hidden;
-    }
-
-    /* === GATE === */
-    #gate {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.95);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      z-index: 100;
-      padding: 20px;
-    }
-
-    #gate h1 {
-      font-size: 36px;
-      margin-bottom: 30px;
-      letter-spacing: 2px;
-    }
-
-    #gate p {
-      max-width: 600px;
-      font-size: 18px;
-      line-height: 1.6;
-      margin-bottom: 40px;
-      opacity: 0.9;
-    }
-
-    #gate button {
-      background: transparent;
-      color: white;
-      border: 2px solid white;
-      padding: 12px 40px;
-      font-size: 20px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    #gate button:hover {
-      background: white;
-      color: black;
+      overflow: auto;
     }
 
     /* === MAIN CONTENT === */
     #mainContent {
-      display: none;
+      display: flex;
       flex-direction: column;
       align-items: center;
       gap: 30px;
@@ -107,27 +64,7 @@
       opacity: 0.95;
     }
 
-    /* === MEMBERS === */
-    .members {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      font-size: 20px;
-      letter-spacing: 1px;
-    }
-
-    .members a {
-      color: white;
-      text-decoration: none;
-      transition: color 0.25s ease;
-    }
-
-    .members a:hover {
-      color: red;
-    }
-
-    /* === AUDIO === */
+    /* === AUDIO CONTROLS === */
     .bg-music {
       position: fixed;
       bottom: 10px;
@@ -139,22 +76,15 @@
     .bg-music:hover {
       opacity: 1;
     }
+
+    .bg-music button {
+      margin: 0 2px;
+      cursor: pointer;
+    }
   </style>
 </head>
 
 <body>
-
-  <!-- GATE -->
-  <div id="gate">
-    <h1>WARNING</h1>
-    <p>
-      This website contains sensitive content.<br><br>
-      By entering, you confirm that you are of legal age
-      and that you accept the Terms of Service and Privacy Policy.
-    </p>
-    <button id="enterBtn">I Agree & Enter</button>
-  </div>
-
   <!-- MAIN -->
   <div id="mainContent">
 
@@ -166,24 +96,24 @@
 +---------------------------------------------------------+
 |                                                         |
 |   NOCTAVIA                                              |
-|   -------------------------------------------         |
+|   -------------------------------------------           |
 |   Role: Fullstack Developer & Automation Specialist     |
 |   Expertise: Discord bots, Web platforms, OSINT,        |
 |              API integrations, scripting & security     |
 |                                                         |
-|   Languages:                                           |
+|   Languages:                                            |
 |     • Python   • C / C++ • C#                           |
-|     • Java / JS / TS • HTML / CSS                        |
-|     • Lua / Bash / SQL                                   |
+|     • Java / JS / TS • HTML / CSS                       |
+|     • Lua / Bash / SQL                                  |
 |                                                         |
 |   Tools / Frameworks:                                   |
-|     • Node.js, Express, Django, Flask                  |
-|     • Roblox Studio, Unity, Electron                   |
-|     • Git / GitHub, SQLite / MySQL                     |
+|     • Node.js, Express, Django, Flask                   |
+|     • Roblox Studio, Unity, Electron                    |
+|     • Git / GitHub, SQLite / MySQL                      |
 |                                                         |
 |   Networks & Platforms:                                 |
-|     • Discord : discord.gg/TON_INVITE                  |
-|     • GitHub  : github.com/TON_PSEUDO                  |
+|     • Discord : discord.gg/search2data                  |
+|     • GitHub  : github.com/Noctavia                     |
 |     • Personal Projects & Automation                    |
 |                                                         |
 |   Status: Active | Always learning | Experimenting      |
@@ -193,7 +123,7 @@
   </div>
 
   <!-- AUDIO -->
-  <audio id="backgroundMusic" loop>
+  <audio id="backgroundMusic" loop autoplay>
     <source src="song.mp3" type="audio/mpeg">
   </audio>
 
@@ -205,42 +135,18 @@
   </div>
 
   <script>
-  const gate = document.getElementById('gate');
-  const main = document.getElementById('mainContent');
-  const music = document.getElementById('backgroundMusic');
-  const enterBtn = document.getElementById('enterBtn');
+    const music = document.getElementById('backgroundMusic');
 
-  // Fonction pour afficher le contenu
-  function showContent() {
-    gate.style.display = 'none';
-    main.style.display = 'flex';
-    document.body.style.overflow = 'auto';
-  }
+    function setVolume(v) {
+      music.volume = v;
+    }
 
-  // Fonction pour régler le volume
-  function setVolume(v) {
-    music.volume = v;
-  }
-
-  // Lancer la musique dès que possible
-  music.volume = 0.3;
-  const playPromise = music.play();
-  if (playPromise !== undefined) {
-    playPromise.catch(() => {}); // évite l'erreur si l'autoplay est bloqué
-  }
-
-  // Vérifie si l'utilisateur a déjà accepté le gate
-  if (localStorage.getItem('gateAccepted') === 'true') {
-    showContent();
-  }
-
-  // Click sur le bouton
-  enterBtn.onclick = () => {
-    localStorage.setItem('gateAccepted', 'true');
-    showContent();
-  };
-</script>
+    // Lancer la musique dès que possible
+    music.volume = 0.3;
+    const playPromise = music.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {}); // ignore si l'autoplay est bloqué
+    }
   </script>
-
 </body>
 </html>
