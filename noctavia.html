@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,145 +8,460 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
 
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       background: black;
       color: white;
       font-family: Inter, sans-serif;
-      margin: 0;
-      padding: 0;
-      overflow: auto;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
     }
 
-    /* === MAIN CONTENT === */
-    #mainContent {
+    /* === GATE === */
+    #gate {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 30px;
-      min-height: 100vh;
-      padding: 40px 20px;
-    }
-
-    /* === IMAGE === */
-    .hanger {
-      display: flex;
       justify-content: center;
+      text-align: center;
+      z-index: 100;
+      padding: 20px;
     }
 
-    .hanger img {
-      max-height: 65vh;
-      filter: grayscale(100%);
-      transform-origin: 50% 0%;
-      animation: swing 7s ease-in-out infinite;
+    #gate h1 {
+      font-size: 36px;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
     }
 
-    @keyframes swing {
-      0%   { transform: rotate(0deg); }
-      20%  { transform: rotate(4deg); }
-      50%  { transform: rotate(0deg); }
-      80%  { transform: rotate(-4deg); }
-      100% { transform: rotate(0deg); }
+    #gate p {
+      max-width: 600px;
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 40px;
+      opacity: 0.9;
     }
 
-    /* === ASCII CARD === */
-    .ascii-card {
+    #gate button {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+      padding: 12px 40px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #gate button:hover {
+      background: white;
+      color: black;
+    }
+
+    /* === PAGES === */
+    #mainContent {
+      display: none;
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .page {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px 80px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+    }
+
+    .page.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .letter-text {
       font-family: "Courier New", monospace;
-      font-size: 14px;
-      line-height: 1.3;
+      font-size: 15px;
+      line-height: 1.9;
       color: #00ffcc;
       background: transparent;
-      border: 1px solid rgba(255,255,255,0.15);
-      padding: 20px 25px;
-      max-width: 650px;
-      white-space: pre;
-      letter-spacing: 0.5px;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 35px 40px;
+      max-width: 700px;
+      width: 100%;
+      white-space: pre-wrap;
+      letter-spacing: 0.3px;
       text-align: left;
       opacity: 0.95;
+      max-height: 70vh;
+      overflow: hidden;
     }
 
-    /* === AUDIO CONTROLS === */
+    /* === NAVIGATION === */
+    .nav {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      z-index: 50;
+    }
+
+    .nav button {
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.4);
+      padding: 8px 24px;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: "Courier New", monospace;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+    }
+
+    .nav button:hover:not(:disabled) {
+      background: white;
+      color: black;
+    }
+
+    .nav button:disabled {
+      opacity: 0.2;
+      cursor: default;
+    }
+
+    .page-indicator {
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 2px;
+    }
+
+    /* === AUDIO === */
     .bg-music {
       position: fixed;
       bottom: 10px;
       right: 10px;
       opacity: 0.4;
       z-index: 10;
+      text-align: right;
     }
 
-    .bg-music:hover {
-      opacity: 1;
+    .bg-music:hover { opacity: 1; }
+
+    .bg-music small {
+      font-size: 11px;
+      display: block;
+      margin-bottom: 4px;
+      color: rgba(255,255,255,0.6);
     }
 
     .bg-music button {
-      margin: 0 2px;
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 3px 8px;
+      font-size: 11px;
       cursor: pointer;
+      margin: 0 2px;
     }
+
+    .bg-music button:hover { background: rgba(255,255,255,0.15); }
   </style>
 </head>
 
 <body>
+
+  <!-- GATE -->
+  <div id="gate">
+    <h1>WARNING</h1>
+    <p>
+      This website contains sensitive content.<br><br>
+      By entering, you confirm that you are of legal age
+      and that you accept the Terms of Service and Privacy Policy.
+    </p>
+    <button id="enterBtn">I Agree & Enter</button>
+  </div>
+
   <!-- MAIN -->
   <div id="mainContent">
 
-    <div class="hanger">
-      <img src="girl.png" alt="figure">
+    <!-- PAGE 1 -->
+    <div class="page active" id="p1">
+      <div class="letter-text">Aujourd'hui… je ne suis plus vraiment là.
+Je parle, j'écris, je respire encore —
+mais quelque chose en moi s'est arrêté en chemin.
+
+Je m'appelle Noctavia.
+Et pendant longtemps, j'ai cru en quelque chose qui n'existe plus.
+
+J'ai aimé.
+Pas à moitié, pas par habitude, pas par peur d'être seul.
+J'ai aimé comme on s'abandonne,
+comme on fait confiance sans filet,
+comme on décide que quelqu'un devient "chez soi".
+
+Et toi… tu étais ce "chez moi".
+
+Je me souviens encore de ce que je ressentais.
+Pas les détails, pas les mots exacts —
+mais cette sensation calme, presque rare,
+d'être exactement là où je devais être.</div>
     </div>
 
-<pre class="ascii-card">
-+---------------------------------------------------------+
-|                                                         |
-|   NOCTAVIA                                              |
-|   -------------------------------------------           |
-|   Role: Fullstack Developer & Automation Specialist     |
-|   Expertise: Discord bots, Web platforms, OSINT,        |
-|              API integrations, scripting & security     |
-|                                                         |
-|   Languages:                                            |
-|     • Python   • C / C++ • C#                           |
-|     • Java / JS / TS • HTML / CSS                       |
-|     • Lua / Bash / SQL                                  |
-|                                                         |
-|   Tools / Frameworks:                                   |
-|     • Node.js, Express, Django, Flask                   |
-|     • Roblox Studio, Unity, Electron                    |
-|     • Git / GitHub, SQLite / MySQL                      |
-|                                                         |
-|   Networks & Platforms:                                 |
-|     • Discord : discord.gg/search2data                  |
-|     • GitHub  : github.com/Noctavia                     |
-|     • Personal Projects & Automation                    |
-|                                                         |
-|   Status: Active | Always learning | Experimenting      |
-|                                                         |
-+---------------------------------------------------------+
-</pre>
+    <!-- PAGE 2 -->
+    <div class="page" id="p2">
+      <div class="letter-text">Je pensais que c'était réel.
+Je pensais que ça allait durer.
+Je pensais que, pour une fois, je ne m'étais pas trompé.
+
+Et ça, c'est probablement la plus grosse erreur que j'ai faite.
+
+Pendant des années, j'ai tenu.
+Même quand quelque chose sonnait faux.
+Même quand ça me faisait mal.
+Même quand, au fond, je savais que je perdais plus que je ne gagnais.
+
+Je suis resté.
+
+Par amour.
+Par espoir.
+Par déni aussi, sûrement.
+
+Trois ans à croire que ça allait s'arranger,
+trois ans à ignorer les fissures en espérant qu'elles disparaissent d'elles-mêmes.
+
+Mais les fissures, ça ne disparaît pas.
+Ça s'agrandit.
+Ça attend juste le bon moment pour tout faire tomber.</div>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page" id="p3">
+      <div class="letter-text">Et ce moment est arrivé.
+
+D'un coup, tout est devenu clair.
+Pas beau, pas apaisant —
+juste brutalement clair.
+
+J'ai compris que j'avais trop supporté.
+Que j'avais trop donné.
+Et surtout… que j'étais seul à le faire.
+
+Parce que oui, j'avais besoin de toi.
+Vraiment.
+
+Pas d'une version distante, pas d'un "je suis là quand ça m'arrange".
+J'avais besoin de quelqu'un qui reste,
+quelqu'un qui tient quand ça devient difficile,
+quelqu'un qui choisit, même quand c'est compliqué.
+
+Mais toi… tu as choisi autrement.
+
+Peut-être que tu souffrais.
+Peut-être que tu étais perdue.
+Peut-être que tu avais besoin de te reconstruire.
+
+Mais explique-moi une chose — une seule :
+Pourquoi fallait-il que ce soit moi qui paie pour ça ?</div>
+    </div>
+
+    <!-- PAGE 4 -->
+    <div class="page" id="p4">
+      <div class="letter-text">Pourquoi est-ce que ton chaos est devenu le mien ?
+Pourquoi est-ce que j'ai dû encaisser ce que tu n'arrivais pas à gérer ?
+
+Tu parlais d'une dernière chance.
+Mais une chance, ça se donne à deux.
+Ce que tu proposais… c'était une illusion.
+
+Et moi, j'étais déjà fatigué de croire aux illusions.
+
+J'étais heureux, tu sais.
+Pas parfaitement, mais sincèrement.
+Et ce bonheur… tu l'as effacé sans même regarder derrière toi.
+
+J'ai fait des efforts que tu ne verras jamais.
+Des compromis que tu n'as même pas remarqués.
+Des silences que j'ai gardés pour ne pas te perdre.
+
+Et pourtant, au final…
+c'est moi que tu étais prête à laisser tomber.
+
+"À contrecœur", tu disais.
+
+Mais un cœur qui tient vraiment…
+il ne lâche pas.</div>
+    </div>
+
+    <!-- PAGE 5 -->
+    <div class="page" id="p5">
+      <div class="letter-text">Et moi ?
+Moi, j'ai encaissé encore une fois.
+
+Même ce soir-là,
+même après avoir compris, même après avoir mal —
+je t'ai rassurée.
+
+Tu te rends compte ?
+J'étais déjà en train de tomber,
+et j'essayais encore de te retenir.
+
+Et maintenant…
+me voilà ici.
+
+À écrire ces mots,
+à transformer ce que je ressens en phrases,
+parce que c'est la seule chose qu'il me reste pour ne pas exploser.
+
+Je dois recommencer.
+Repartir de zéro.
+Avec des souvenirs qui pèsent,
+avec des questions sans réponse,
+avec un vide que je n'ai pas choisi.
+
+Et la vérité ?
+C'est que je ne sais même pas si j'en suis capable.</div>
+    </div>
+
+    <!-- PAGE 6 -->
+    <div class="page" id="p6">
+      <div class="letter-text">Tu aurais pu m'aider.
+Juste un peu.
+Juste être là.
+
+Mais tu as choisi de partir.
+
+Et malgré tout ça…
+malgré la lucidité, malgré la douleur, malgré ce que je comprends maintenant —
+
+Je t'aime encore.
+
+Et c'est ça qui me détruit le plus.
+
+Parce que je vois tout.
+Je comprends tout.
+Mais je ressens encore.
+
+Alors dis-moi… pourquoi ?
+Pourquoi me faire passer par ça ?
+
+Pourquoi construire quelque chose
+juste pour le laisser s'effondrer
+comme si ça n'avait jamais compté ?</div>
+    </div>
+
+    <!-- PAGE 7 -->
+    <div class="page" id="p7">
+      <div class="letter-text">Je suis désolé, tu sais.
+Pour mes erreurs, pour mes failles, pour ce que j'ai mal fait.
+
+Mais j'ai essayé.
+Vraiment.
+
+Maintenant…
+si c'est vraiment ce que tu veux,
+si c'est vraiment la fin que tu as choisie —
+
+alors je continuerai.
+
+Pas parce que je vais bien.
+Pas parce que je suis prêt.
+
+Mais parce que je n'ai pas le choix.
+
+Je te déteste.
+Pour ce que tu as fait.
+Pour ce que tu as laissé.
+
+Mais en même temps…
+je t'aime encore.
+
+Et vivre avec ces deux vérités en même temps,
+c'est probablement la chose la plus difficile que j'ai jamais faite.
+
+Alors voilà.
+
+C'est la fin.
+
+Pas celle que je voulais,
+pas celle que j'avais imaginée —
+
+mais celle que tu as choisie.
+
+Adieu.</div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="nav">
+      <button id="prevBtn" onclick="changePage(-1)" disabled>← PREV</button>
+      <span class="page-indicator" id="pageIndicator">01 / 07</span>
+      <button id="nextBtn" onclick="changePage(1)">NEXT →</button>
+    </div>
+
   </div>
 
-  <!-- AUDIO -->
-  <audio id="backgroundMusic" loop autoplay>
-    <source src="song.mp3" type="audio/mpeg">
-  </audio>
-
+  <!-- SPOTIFY EMBED -->
   <div class="bg-music">
-    <small>Background track</small><br>
-    <button onclick="setVolume(0.1)">Low</button>
-    <button onclick="setVolume(0.3)">Med</button>
-    <button onclick="setVolume(0.6)">High</button>
+    <iframe
+      src="https://open.spotify.com/embed/track/5Va9Ksooa8edLG4iwFV9VY?utm_source=generator&theme=0"
+      width="260" height="80"
+      frameborder="0"
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+      loading="lazy"
+      style="border-radius:8px; display:block;">
+    </iframe>
   </div>
 
   <script>
-    const music = document.getElementById('backgroundMusic');
+    const gate     = document.getElementById('gate');
+    const main     = document.getElementById('mainContent');
+    const enterBtn = document.getElementById('enterBtn');
 
-    function setVolume(v) {
-      music.volume = v;
+    const totalPages = 7;
+    let currentPage  = 1;
+
+    function showContent() {
+      gate.style.display = 'none';
+      main.style.display = 'block';
     }
 
-    // Lancer la musique dès que possible
-    music.volume = 0.3;
-    const playPromise = music.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {}); // ignore si l'autoplay est bloqué
+    function changePage(dir) {
+      document.getElementById('p' + currentPage).classList.remove('active');
+      currentPage += dir;
+      document.getElementById('p' + currentPage).classList.add('active');
+
+      document.getElementById('prevBtn').disabled = currentPage === 1;
+      document.getElementById('nextBtn').disabled = currentPage === totalPages;
+      document.getElementById('pageIndicator').textContent =
+        String(currentPage).padStart(2, '0') + ' / ' + String(totalPages).padStart(2, '0');
     }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' && currentPage < totalPages) changePage(1);
+      if (e.key === 'ArrowLeft'  && currentPage > 1)          changePage(-1);
+    });
+
+
+
+    if (localStorage.getItem('gateAccepted') === 'true') showContent();
+
+    enterBtn.onclick = () => {
+      localStorage.setItem('gateAccepted', 'true');
+      showContent();
+    };
   </script>
+
 </body>
 </html>
